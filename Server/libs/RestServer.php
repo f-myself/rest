@@ -1,5 +1,7 @@
 <?php
 
+include "DataHandler.php";
+
 class RestServer 
 {
     private $service;

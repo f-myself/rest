@@ -40,10 +40,47 @@ class CarsService
 
     private function getCarByParams($params)
     {
-        echo "<pre>";
-        var_dump($params);
-        echo "</pre>";
-        return "This is the cars by params";
+        $year = $params['year'];
+        $model = $params['model'];
+        $capacity = $params['capacity'];
+        $color = $params['color'];
+        $maxSpeed = $params['maxSpeed'];
+        $price = $params['price'];
+
+        if($year and is_numeric($year))
+        {
+            $carsByParams = $this->sql->newQuery()
+                                  ->select(['c.id', 'b.brand', 'model'])
+                                  ->from('rest_cars c')
+                                  ->join('rest_brands b', 'c.brand_id=b.id')
+                                  ->where("c.year<=" . $year);
+        
+        
+            if ($model and is_string($model))
+            {
+                $carsByParams = $carsByParams->l_and("c.model='" . trim($model) . "'");
+                echo $carsByParams->getQuery();
+            }
+            if ($capacity and is_numeric($capacity))
+            {
+                $carsByParams = $carsByParams->l_and("c.capacity<=" . $capacity);
+            }
+            if ($color and is_numeric($color))
+            {
+                $carsByParams = $carsByParams->l_and("c.color_id='" . trim($color) . "'");
+            }
+            if ($maxSpeed and is_numeric($maxSpeed))
+            {
+                $carsByParams = $carsByParams->l_and("c.max_speed<=" . $maxSpeed);
+            }
+            if ($price and is_numeric($price))
+            {
+                $carsByParams = $carsByParams->l_and("c.price<=" . $price);
+            }
+            $carsByParams = $carsByParams->doQuery();
+            return $carsByParams;
+        }
+        return ERR_CARS_BY_PARAMS;
     }
     
     public function getCars($params=false)
@@ -63,7 +100,8 @@ class CarsService
         
         if(isset($_GET['filter']))
         {
-            $this->getCarByParams($_GET['filter']);
+            $result = $this->getCarByParams($_GET['filter']);
+            return $result;
         }
     }
 
