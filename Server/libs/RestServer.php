@@ -20,7 +20,7 @@ class RestServer
 
     function setMethod($method, $params=false)
     {
-        print_r( $params);
+        //print_r($params);
         if (method_exists($this->service, $method))
         {
             $result = call_user_func([$this->service, $method], $params);
@@ -31,10 +31,10 @@ class RestServer
 
     public function chooseMethod($service)
     {
-        // list($source, $folder, $service, $param1, $table, $path) = explode('/', $url, 6); //Server, api, cars, params
-        list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+        list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
+        // list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
         // echo $this->url;
-        //echo $source . "\n";
+        // echo $source . "\n";
         // echo $folder . "\n";
         // echo $service . "\n";
         // echo $params . "\n";
