@@ -1,6 +1,6 @@
 <?php
 
-include "libs/sql_config.php";
+include "sql_config.php";
 
 class SQL
 {
