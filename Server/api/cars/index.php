@@ -1,5 +1,7 @@
 <?php
 
+//header('Status: 200 Ok');
+
 include "../../config.php";
 include "../../libs/RestServer.php";
 include "../../libs/PDOHandler.php";
@@ -21,6 +23,7 @@ class CarsService
                              ->from('rest_cars c')
                              ->join('rest_brands b', 'c.brand_id=b.id')
                              ->doQuery();
+        header('Status: 200 Ok');
         return $allcars;
     }
 
@@ -34,8 +37,16 @@ class CarsService
                              ->join('rest_colors cl', 'c.color_id=cl.id')
                              ->where('c.id=' . $id)
                              ->doQuery();
-            return $car[0];
+            if ($car[0])
+            {
+                header('Status: 200 Ok');
+                return $car[0];
+            } else {
+                header('Status: 204 No Content');
+                return null;
+            }
         }
+        header('HTTP/1.0 400 Bad Request');
     }
 
     private function getCarByParams($params)
@@ -59,7 +70,6 @@ class CarsService
             if ($model and is_string($model))
             {
                 $carsByParams = $carsByParams->l_and("c.model='" . trim($model) . "'");
-                echo $carsByParams->getQuery();
             }
             if ($capacity and is_numeric($capacity))
             {
@@ -94,7 +104,7 @@ class CarsService
         if(!$params[0])
         {
             $result = $this->getAllCars();
-            print_r($result);
+            // print_r($result);
             return $result;
         }
         

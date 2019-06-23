@@ -7,6 +7,6 @@ include "services/CarsService.php";
 
 $obj = new CarsService;
 
-echo "<pre>";
-var_dump($obj->getCars());
-echo "</pre>";
+// echo "<pre>";
+// var_dump($obj->getCars());
+// echo "</pre>";

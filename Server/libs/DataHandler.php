@@ -23,9 +23,9 @@ class DataHandler
         }
     }
 
-    private function getResult()
+    public function getResult()
     {
-        return $this->result();
+        return $this->result;
     }
 
     private function toJSON($data)
@@ -35,7 +35,27 @@ class DataHandler
 
     private function toText($data)
     {
-        return implode("\n", $data);
+        $text = "";
+        if (is_array($data))
+        {
+            foreach ($data as $data_key => $data_value)
+            {
+                if (is_array($data_value))
+                {
+                    foreach ($data_value as $key => $param)
+                    {
+                        $text .= "$key: $param\n";
+                    }
+                }
+
+                if (is_string($data_value))
+                {
+                    $text .= "$data_key: $data_value\n";
+                }
+            }
+            return $text;
+        }
+        return false;
     }
 
     private function toHtml($data)
@@ -43,7 +63,7 @@ class DataHandler
         if(is_array($data))
         {
             $result = "";
-            foreach($data as $value)
+            foreach($data as $key => $value)
             {
                 $result .= "<div>";
                 if (is_array($value))
@@ -53,13 +73,13 @@ class DataHandler
                     {
                         $result .="<li>" . $param_key . ": " . $param_val . "</li>";
                     }
-                    $result .="/<ul>";
+                    $result .="</ul>";
                 }
-                if (is_string($data) || is_numeric($data))
+                if (is_string($value) || is_numeric($value))
                 {
-                    $result .= "<p>" . $data . "</p>";
+                    $result .= "<li>$key: $value</li>";
                 }
-                $result .= "</div>"
+                $result .= "</div>";
             }
             return $result;
         }
@@ -68,15 +88,28 @@ class DataHandler
 
     private function toXML($data)
     {
-        $xml = new SimpleXMLElement("<cars/>");
+        $xml = new SimpleXMLElement('<cars/>');
 
-        if(is_array($data))
+        if (is_array($data))
         {
-            foreach ($data as $car)
+            foreach ($data as $data_key => $item)
             {
-                array_walk_recursive($car, array($xml, 'addChild'));
+                if (is_array($item))
+                {
+                    $car = $xml->addChild('car');
+                    foreach ($item as $key => $val)
+                    {
+                        $car->addChild($key, $val);
+                    }
+                }
+
+                if(is_string($item))
+                {
+                    $xml->addChild($data_key, $item);
+                }
             }
-            return $xml->asXML();
+            $result = $xml->asXML();
+            return $result;
         }
         return false;
     }

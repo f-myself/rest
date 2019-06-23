@@ -16,13 +16,11 @@ class RestServer
         {
             $this->service = $service;
         }
-        $this->chooseMethod($service);
+        echo $this->chooseMethod($service);
     }
-
 
     function setMethod($method, $params=false)
     {
-        //print_r($params);
         if (method_exists($this->service, $method))
         {
             $result = call_user_func([$this->service, $method], $params);
@@ -33,8 +31,10 @@ class RestServer
 
     public function chooseMethod($service)
     {
-        list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
-        // list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+        // list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
+        list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+
+        
         // echo $this->url;
         // echo $source . "\n";
         // echo $folder . "\n";
@@ -50,6 +50,8 @@ class RestServer
         switch($this->method)
         {
             case 'GET':
+                $findView = explode(".", $params);
+                $viewType = $findView[-1];
                 $result = $this->setMethod('get'.ucfirst($service), explode('/', $params));
                 break;
             case 'DELETE':
@@ -65,18 +67,16 @@ class RestServer
                 return false;
         }
 
-        $this->showResults($result);
-
+        return $this->showResults($result, VIEW_JSON);
         
         // echo "<pre>";
         // var_dump($this->service->getCars());
         // echo "</pre>";
     }
 
-    private function showResults($result)
+    private function showResults($data, $viewType=VIEW_JSON)
     {
-        echo "<pre>";
-        var_dump($result);
-        echo "</pre>";
+        $dh = new DataHandler($data, $viewType);
+        return $dh->getResult();
     }
 }
