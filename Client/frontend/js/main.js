@@ -149,28 +149,39 @@ function carDetails(id){
     });
 }
 
-// function signup(){
-//     var formData = {
-//         name: $('input[name=name]').val(),
-//         nickname: $('input[name=nickname]').val(),
-//         email: $('input[name=email]').val(),
-//         password: $('input[name=password]').val(),
-//         confirm: $('input[name=confirm]').val()
-//     }
-//     $.ajax({
-//         type: "post",
-//         url: "api/users/signup/",
-//         data: formData,
-//         dataType: "text",
-//         success: function(result){
-//             switch (result) {
-//                 case 'success':
-//                     $signUpForm
-//                     break;
-            
-//                 default:
-//                     break;
-//             }
-//         }
-//     });
-// }
+function signup(){
+    var formData = $('#js-signup-form').serializeArray();
+    console.log(formData);
+    $.ajax({
+        type: "post",
+        url: "api/signup/",
+        data: formData,
+        success: function(result){
+            console.log(result);
+            switch (result) {
+                case '"success"':
+                    $signUpForm.html('<div class="col-12"><h2>Thanks for registration! Now you can login</h2></div>')
+                    break;
+                case '"failed"':
+                    $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration failed. Try again.</h2></div>')
+                    break;
+                case '"password"':
+                    $signUpForm.html('<div class="col-12"><h2>Please, try again. Passwords are not equal.</h2></div>')
+                    break;
+                case '"exists"':
+                        $signUpForm.html('<div class="col-12"><h2>Sorry, but user with this nickname or email already exists. Try again.</h2></div>')
+                        break;
+                default:
+                    $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>')
+                    break;
+            };
+        },
+        error: function(){
+            $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+        }
+    });
+}
+
+$("#btn-signup").click(function(){
+    signup();
+});

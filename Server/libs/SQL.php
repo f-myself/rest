@@ -146,6 +146,17 @@ class SQL
     	return $this;
 	}
 
+	public function l_or($conditions)
+	{
+		if(is_string(trim($conditions)))
+		{
+			$this->query .= " OR " . trim($conditions);
+			return $this;
+		}
+		array_push($this->errors, ERR_VAL_CONDITIONS);
+    	return $this;
+	}
+
     public function leftJoin($tableName, $conditions)
     {
     	if ($tableName and is_string($tableName))
