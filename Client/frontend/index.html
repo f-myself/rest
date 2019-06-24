@@ -15,6 +15,27 @@
                     <li class="nav-item">
                         <a class="nav-link" href="">Show all cars</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Login
+                        </a>
+                        <div class="dropdown-menu" style="min-width: 18rem;" aria-labelledby="navbarDropdown">
+                            <form class="p-3">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Password</label>
+                                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </li>
+                    <li class="nav-item" id="js-signup">
+                        <a class="nav-link" href="#registration">Registration</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -74,6 +95,35 @@
                 </div>
                 <div class="row" id="js-carsDetailed">
                     
+                </div>
+
+                <div class="row" id="js-registration">
+                    <div class="col-6">
+                        <h2>Registration form</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="r-name">Your real name*</label>
+                                <input type="text" name="name" class="form-control" id="r-name" aria-describedby="emailHelp" placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label for="r-nick">Nickname*</label>
+                                <input type="text" name="nickname" class="form-control" id="r-nick" aria-describedby="emailHelp" placeholder="Enter nickname">
+                            </div>
+                            <div class="form-group">
+                                <label for="r-email">Email address*</label>
+                                <input type="email" name="email" class="form-control" id="r-email" aria-describedby="emailHelp" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="r-pass">Password*</label>
+                                <input type="password" name="password" class="form-control" id="r-pass" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <label for="r-confirm">Confirm Password*</label>
+                                <input type="password" name="passwordConfirm" class="form-control" id="r-confirm" placeholder="Password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

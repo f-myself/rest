@@ -88,8 +88,15 @@ class CarsService
                 $carsByParams = $carsByParams->l_and("c.price<=" . $price);
             }
             $carsByParams = $carsByParams->doQuery();
-            return $carsByParams;
+            if ($carsByParams)
+            {
+                header('Status: 200 Ok');
+                return $carsByParams;
+            }
+            header('Status: 204 No Content');
+            return null;
         }
+        header('HTTP/1.0 400 Bad Request');
         return ERR_CARS_BY_PARAMS;
     }
     

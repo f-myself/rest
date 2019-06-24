@@ -22,12 +22,19 @@ $priceSpan[0].textContent = $price.val() + "$";
 
 var $carList = $('#js-carsList');
 var $carDetailed = $('#js-carsDetailed');
+var $signUpForm = $('#js-registration');
 var $btnFilter = $('#js-filter');
 
+function userRegistration()
+{
+    $carDetailed.hide("fast");
+    $carList.hide("fast");
+    $signUpForm.show("fast");
+}
 
-// $btnFilter.click(function(){
-//     console.log(this);
-// })
+$("#js-signup").click(function(){
+    userRegistration();
+});
 
 function is_numeric( mixed_var ) {
 	return !isNaN( mixed_var );
@@ -53,8 +60,6 @@ function carFilter(){
             data: formData,
             dataType: "json",
             success: function(cars){
-                console.log('success');
-                console.log(cars);
                 $carList.html("");
                 cars.forEach(car => {
                     $carList.append("<div class='col-lg-4 col-md-12 col-sm-12 col-xl-2 border border-light ml-1 mb-1 js-details' onclick='carDetails(" + car.id + ")' id='"+ car.id + "'><a href='#"+ car.id + "'>" + car.brand + " " + car.model + "</div>")
@@ -68,6 +73,7 @@ function carFilter(){
 
 (function() {
     $carDetailed.hide();
+    $signUpForm.hide();
     $.ajax({
         type: "GET",
         url: "api/cars/",
