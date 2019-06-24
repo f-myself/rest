@@ -53,7 +53,9 @@ function carFilter(){
         }
     };
     if (formData.filter.year && is_numeric(formData.filter.year)){
-        console.log(formData);
+        //console.log(formData);
+        $carList.show();
+        $carDetailed.hide("fast");
         $.ajax({
             type: "GET",
             url: "api/cars/",
@@ -61,13 +63,17 @@ function carFilter(){
             dataType: "json",
             success: function(cars){
                 $carList.html("");
-                cars.forEach(car => {
-                    $carList.append("<div class='col-lg-4 col-md-12 col-sm-12 col-xl-2 border border-light ml-1 mb-1 js-details' onclick='carDetails(" + car.id + ")' id='"+ car.id + "'><a href='#"+ car.id + "'>" + car.brand + " " + car.model + "</div>")
-                });
+                if (cars){
+                    cars.forEach(car => {
+                        $carList.append("<div class='col-lg-4 col-md-12 col-sm-12 col-xl-2 border border-light ml-1 mb-1 js-details' onclick='carDetails(" + car.id + ")' id='"+ car.id + "'><a href='#"+ car.id + "'>" + car.brand + " " + car.model + "</div>")
+                    });
+                } else {
+                    $carList.html('<div class="col-12"><h2>Sorry, but we have no cars with this params!</h2></div>')
+                }
             }
         });
     } else {
-        $carList.html('<div class="col-9"><h2>Please, set year as numeric type. This field is required!</h2></div>');
+        $carList.html('<div class="col-12"><h2>Please, set year as numeric type. This field is required!</h2></div>');
     }
 }
 
@@ -142,3 +148,29 @@ function carDetails(id){
         }
     });
 }
+
+// function signup(){
+//     var formData = {
+//         name: $('input[name=name]').val(),
+//         nickname: $('input[name=nickname]').val(),
+//         email: $('input[name=email]').val(),
+//         password: $('input[name=password]').val(),
+//         confirm: $('input[name=confirm]').val()
+//     }
+//     $.ajax({
+//         type: "post",
+//         url: "api/users/signup/",
+//         data: formData,
+//         dataType: "text",
+//         success: function(result){
+//             switch (result) {
+//                 case 'success':
+//                     $signUpForm
+//                     break;
+            
+//                 default:
+//                     break;
+//             }
+//         }
+//     });
+// }
