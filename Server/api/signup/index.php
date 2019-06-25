@@ -62,8 +62,8 @@ class SignUpService
             $password)
         {
             $hashPassword = md5($password);
-            //$signup = $signup->insert("rest_users", ['name', 'nickname', 'email', 'password'], "'$name', '$nickname', '$email', '$hashPassword'")->doQuery();
-            $signup = true;
+            $signup = $signup->insert("rest_users", ['name', 'nickname', 'email', 'password'], "'$name', '$nickname', '$email', '$hashPassword'")->doQuery();
+            // $signup = true;
             if($signup)
             {
                 header('Status: 200 Ok');

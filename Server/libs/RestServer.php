@@ -31,8 +31,8 @@ class RestServer
 
     public function chooseMethod($service)
     {
-        // list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
-        list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+        list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
+        // list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
         
         // echo $this->url;
         // echo $source . "\n";
@@ -59,7 +59,19 @@ class RestServer
                 $result = $this->setMethod('post'.ucfirst($service), $params);
                 break;
             case 'PUT':
-                $result = $this->setMethod('put'.ucfirst($service), explode('/', $params));
+                $params = array(); 
+                $putdata = file_get_contents('php://input'); 
+                $exploded = explode('&', $putdata);  
+                
+                foreach($exploded as $pair) 
+                { 
+                    $item = explode('=', $pair); 
+                    if(count($item) == 2) 
+                    { 
+                        $params[urldecode($item[0])] = urldecode($item[1]); 
+                    } 
+                }
+                $result = $this->setMethod('put'.ucfirst($service), $params);
                 break;
             default:
                 return false;

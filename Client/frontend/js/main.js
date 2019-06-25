@@ -24,6 +24,9 @@ var $carList = $('#js-carsList');
 var $carDetailed = $('#js-carsDetailed');
 var $signUpForm = $('#js-registration');
 var $btnFilter = $('#js-filter');
+var $helloBar = $('#js-hello-bar');
+
+//$helloBar.hide();
 
 function userRegistration()
 {
@@ -184,4 +187,25 @@ function signup(){
 
 $("#btn-signup").click(function(){
     signup();
+});
+
+function signin(){
+    var formData = $('#js-signin-form').serializeArray();
+    formData.push({name: "operation", value: "login"});
+    console.log(formData);
+    $.ajax({
+        type: "put",
+        url: "api/signin/",
+        data: formData,
+        success: function(result){
+            console.log(result);
+        },
+        error: function(){
+            $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+        }
+    });
+}
+
+$("#btn-signin").click(function(){
+    signin();
 });

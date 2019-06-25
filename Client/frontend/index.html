@@ -20,7 +20,7 @@
                             Login
                         </a>
                         <div class="dropdown-menu" style="min-width: 18rem;" aria-labelledby="navbarDropdown">
-                            <form class="p-3">
+                            <form class="p-3" method="PUT" id="js-signin-form">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email address</label>
                                     <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -29,8 +29,18 @@
                                     <label for="exampleInputPassword1">Password</label>
                                     <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                                 </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-primary" id="btn-signin">Submit</button>
                             </form>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown" id="js-hello-bar">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Hello, user
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#orders">Show orders</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#logout">Logout</a>
                         </div>
                     </li>
                     <li class="nav-item" id="js-signup">
