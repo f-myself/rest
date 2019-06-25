@@ -25,6 +25,9 @@ var $carDetailed = $('#js-carsDetailed');
 var $signUpForm = $('#js-registration');
 var $btnFilter = $('#js-filter');
 var $helloBar = $('#js-hello-bar');
+var $userBar = $('#js-userbar');
+var $statusBlock = $('#js-status');
+var $loginBar = $('#js-loginbar');
 
 //$helloBar.hide();
 
@@ -83,6 +86,17 @@ function carFilter(){
 (function() {
     $carDetailed.hide();
     $signUpForm.hide();
+    $statusBlock.hide();
+    if(localStorage.getItem('nickname'))
+    {
+        $userBar.text("Hello, " + localStorage.getItem('nickname'))
+
+        $helloBar.show();
+        $loginBar.hide();
+    } else {
+        $helloBar.hide();
+        $loginBar.show();
+    }
     $.ajax({
         type: "GET",
         url: "api/cars/",
@@ -155,34 +169,48 @@ function carDetails(id){
 function signup(){
     var formData = $('#js-signup-form').serializeArray();
     console.log(formData);
-    $.ajax({
-        type: "post",
-        url: "api/signup/",
-        data: formData,
-        success: function(result){
-            console.log(result);
-            switch (result) {
-                case '"success"':
-                    $signUpForm.html('<div class="col-12"><h2>Thanks for registration! Now you can login</h2></div>')
-                    break;
-                case '"failed"':
-                    $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration failed. Try again.</h2></div>')
-                    break;
-                case '"password"':
-                    $signUpForm.html('<div class="col-12"><h2>Please, try again. Passwords are not equal.</h2></div>')
-                    break;
-                case '"exists"':
-                        $signUpForm.html('<div class="col-12"><h2>Sorry, but user with this nickname or email already exists. Try again.</h2></div>')
-                        break;
-                default:
-                    $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>')
-                    break;
-            };
-        },
-        error: function(){
-            $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+    var status = true;
+    formData.forEach(element => {
+        if (!element.value)
+        {
+            $statusBlock.html("<h2>All fields are required!</h2>")
+            $statusBlock.show("fast");
+            status = false;
         }
-    });
+    })
+    if(status)
+    {
+        $.ajax({
+            type: "post",
+            url: "api/signup/",
+            data: formData,
+            success: function(result){
+                console.log(result);
+                switch (result) {
+                    case '"success"':
+                        $signUpForm.html('<div class="col-12"><h2>Thanks for registration! Now you can login</h2></div>');
+                        break;
+                    case '"failed"':
+                        $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration failed. Try again.</h2></div>');
+                        break;
+                    case '"password"':
+                        $signUpForm.html('<div class="col-12"><h2>Please, try again. Passwords are not equal.</h2></div>');
+                        break;
+                    case '"exists"':
+                            $signUpForm.html('<div class="col-12"><h2>Sorry, but user with this nickname or email already exists. Try again.</h2></div>');
+                            break;
+                    default:
+                        $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+                        break;
+                };
+            },
+            error: function(){
+                $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+            }
+        });
+    } else {
+        return false;
+    }
 }
 
 $("#btn-signup").click(function(){
@@ -193,18 +221,96 @@ function signin(){
     var formData = $('#js-signin-form').serializeArray();
     formData.push({name: "operation", value: "login"});
     console.log(formData);
+    if (!formData[0].value || !formData[1].value)
+    {
+        $statusBlock.html("<h2>All fields are required!</h2>")
+        $statusBlock.show("fast");
+        return false;
+    }
     $.ajax({
         type: "put",
         url: "api/signin/",
         data: formData,
+        dataType: "json",
         success: function(result){
             console.log(result);
+            switch (result.status) {
+                case 'success':
+                    localStorage.setItem('id', result.id);
+                    localStorage.setItem('nickname', result.nickname);
+                    localStorage.setItem('token', result.token);
+                    $userBar.text("Hello, " + result.nickname);
+                    $userBar.show("fast");
+                    location.reload();
+                    break;
+                case 'no_user':
+                    $statusBlock.html("<h2>No user with this email. Please, check fields and try again.</h2>")
+                    $statusBlock.show("fast");
+                    break;
+                case 'password':
+                    $signUpForm.html('<div class="col-12"><h2>Please, try again. Passwords are not equal.</h2></div>');
+                    break;
+                case 'err_password':
+                    $statusBlock.html("<h2>Wrong password. Please, check fields and try again.</h2>");
+                    $statusBlock.show("fast");
+                    break;
+                default:
+                    $statusBlock.html('<h2>Error. Please, try again later.</h2>');
+                    $statusBlock.show("fast");
+                    break;
+            };
         },
         error: function(){
-            $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+            $statusBlock.html('<h2>Error. Please, try again later.</h2>');
+            $statusBlock.show("fast");
         }
     });
 }
+
+function logout(){
+    var formData = {
+        id: localStorage.getItem('id'),
+        token: localStorage.getItem('token'),
+        operation: "logout"
+    };
+    $.ajax({
+        type: "put",
+        url: "api/signin/",
+        data: formData,
+        dataType: "json",
+        success: function(result){
+            console.log(result);
+            switch (result.status) {
+                case 'success':
+                    localStorage.clear();
+                    location.reload();
+                    break;
+                case 'err_token':
+                    $statusBlock.html("<h2>Don't touch token, pls. >:(</h2>")
+                    $statusBlock.show("fast");
+                    break;
+                case 'error':
+                    $statusBlock.html("<h2>Lol. You already logout. How have you done that?</h2>");
+                    $statusBlock.show("fast");
+                    localStorage.clear();
+                    break;
+                default:
+                    $signUpForm.html('<h2>Error. Please, try again later.</h2>');
+                    $statusBlock.show("fast");
+                    localStorage.clear();
+                    break;
+            };
+        },
+        error: function(){
+            $signUpForm.html('<h2>Error. Please, try again later.</h2>');
+            $statusBlock.show("fast");
+        }
+    });
+}
+
+$('#js-logout').click(function(){
+    logout();
+});
 
 $("#btn-signin").click(function(){
     signin();

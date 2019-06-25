@@ -2,8 +2,8 @@
     Allow from all
 </Limit>
 RewriteEngine On
-RewriteBase /~user6/REST/Server/api/signin/
-# RewriteBase /Server/api/signin/
+# RewriteBase /~user6/REST/Server/api/signin/
+RewriteBase /Server/api/signin/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ index.php
