@@ -45,13 +45,13 @@ class SignUpService
         if ($password != $confirm)
         {
             header("Status: 200 Ok");
-            return "password";
+            return ["status" => "password"];
         }
 
         if(!$this->checkRepeat($nickname, $email))
         {
             header("Status: 200 Ok");
-            return "exists";
+            return ["status" => "exists"];
         }
 
         $signup = $this->sql->newQuery();
@@ -67,11 +67,11 @@ class SignUpService
             if($signup)
             {
                 header('Status: 200 Ok');
-                return 'success';
+                return ["status" => "success"];
             }
         }
         header("HTTP/1.0 400 Bad Request");
-        return 'failed';
+        return ["status" => "failed"];
     }
 
     public function putSignup()

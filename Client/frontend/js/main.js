@@ -34,6 +34,7 @@ var $loginBar = $('#js-loginbar');
 function userRegistration()
 {
     $carDetailed.hide("fast");
+    $statusBlock.hide();
     $carList.hide("fast");
     $signUpForm.show("fast");
 }
@@ -115,6 +116,7 @@ function onMain() {
 }
 
 function carDetails(id){
+    $statusBlock.hide();
     $carList.hide();
     $carDetailed.show("fast");
     $.ajax({
@@ -167,6 +169,7 @@ function carDetails(id){
 }
 
 function signup(){
+    $statusBlock.hide();
     var formData = $('#js-signup-form').serializeArray();
     console.log(formData);
     var status = true;
@@ -184,28 +187,35 @@ function signup(){
             type: "post",
             url: "api/signup/",
             data: formData,
+            dataType: "json",
             success: function(result){
                 console.log(result);
-                switch (result) {
-                    case '"success"':
-                        $signUpForm.html('<div class="col-12"><h2>Thanks for registration! Now you can login</h2></div>');
+                switch (result.status) {
+                    case 'success':
+                        $statusBlock.html('<h2>Thanks for registration! Now you can login</h2>');
+                        $statusBlock.show("fast");
                         break;
-                    case '"failed"':
-                        $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration failed. Try again.</h2></div>');
+                    case 'failed':
+                        $statusBlock.html('<h2>Sorry, but your registration failed. Try again.</h2>');
+                        $statusBlock.show("fast");
                         break;
-                    case '"password"':
-                        $signUpForm.html('<div class="col-12"><h2>Please, try again. Passwords are not equal.</h2></div>');
+                    case 'password':
+                        $statusBlock.html('<h2>Please, try again. Passwords are not equal.</h2>');
+                        $statusBlock.show("fast");
                         break;
-                    case '"exists"':
-                            $signUpForm.html('<div class="col-12"><h2>Sorry, but user with this nickname or email already exists. Try again.</h2></div>');
-                            break;
+                    case 'exists':
+                        $statusBlock.html('<h2>Sorry, but user with this nickname or email already exists. Try again.</h2>');
+                        $statusBlock.show("fast");
+                        break;
                     default:
-                        $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+                        $statusBlock.html('<h2>Sorry, but your registration not over. Try again.</h2>');
+                        $statusBlock.show("fast");
                         break;
                 };
             },
             error: function(){
-                $signUpForm.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+                $statusBlock.html('<div class="col-12"><h2>Sorry, but your registration not over. Try again.</h2></div>');
+                $statusBlock.show("fast");
             }
         });
     } else {
@@ -218,6 +228,7 @@ $("#btn-signup").click(function(){
 });
 
 function signin(){
+    $statusBlock.hide();
     var formData = $('#js-signin-form').serializeArray();
     formData.push({name: "operation", value: "login"});
     console.log(formData);
@@ -268,6 +279,7 @@ function signin(){
 }
 
 function logout(){
+    $statusBlock.hide();
     var formData = {
         id: localStorage.getItem('id'),
         token: localStorage.getItem('token'),
