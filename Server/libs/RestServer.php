@@ -25,7 +25,6 @@ class RestServer
         {
             $result = call_user_func([$this->service, $method], $params);
         }
-
         return $result;
     }
 

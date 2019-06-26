@@ -28,6 +28,8 @@ var $helloBar = $('#js-hello-bar');
 var $userBar = $('#js-userbar');
 var $statusBlock = $('#js-status');
 var $loginBar = $('#js-loginbar');
+var $orderBlock = $('#js-order');
+var $orderForm = $('#js-order-form');
 
 //$helloBar.hide();
 
@@ -87,6 +89,7 @@ function carFilter(){
 (function() {
     $carDetailed.hide();
     $signUpForm.hide();
+    $orderBlock.hide();
     $statusBlock.hide();
     if(localStorage.getItem('nickname'))
     {
@@ -112,7 +115,11 @@ function carFilter(){
 
 function onMain() {
     $carDetailed.hide("fast");
+    $orderBlock.hide();
+    $statusBlock.hide("fast");
     $carList.show("fast");
+
+
 }
 
 function carDetails(id){
@@ -156,8 +163,10 @@ function carDetails(id){
                                 </tbody>
                             </table>
                             <button onclick="onMain()" class="btn btn-primary">Back to list</button>
+                            <button onclick="makeOrder()" class="btn btn-primary">Buy this car</button>
                         </div>
                 `);
+                localStorage.setItem("car", car.id);
             } else {
                 $carDetailed.html('<div class="col-9"><h2>Sorry, but we don\'t have car with this id!</h2></div>');
             }
@@ -326,4 +335,73 @@ $('#js-logout').click(function(){
 
 $("#btn-signin").click(function(){
     signin();
+});
+
+function makeOrder(){
+    if (!localStorage.getItem("id") || !localStorage.getItem("car")){
+        $orderBlock.html("<h2>You need to be logged for order</h2>");
+        $orderBlock.show("fast");
+    } else {
+        $orderBlock.html(`
+        <h2>Order form</h2>
+        <form method="POST" id="js-order-form">
+            <div class="form-group">
+                <label for="payment">Payment</label>
+                <select class="form-control" name="payment" id="payment">
+                    <option value="1">Credit card</option>
+                    <option value="2">Cash</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Address*</label>
+                <input type="text" name="address" class="form-control" id="address" aria-describedby="emailHelp" placeholder="Enter delivery adress" required>
+            </div>
+            <button type="button" id="btn-order" onclick="newOrder()" class="btn btn-primary">Submit</button>
+        </form>`);
+        $orderBlock.show("fast");
+    }
+}
+
+function newOrder(){
+    var formData = $("#js-order-form").serializeArray();
+    formData.push({name: "id", value: localStorage.getItem("id")});
+    formData.push({name: "car", value: localStorage.getItem("car")});
+    formData.push({name: "token", value: localStorage.getItem("token")});
+    console.log(formData);
+    if (!formData[3].value || !formData[4].value)
+    {
+        $statusBlock.html("<h2>You need to be logged for order</h2>");
+        $statusBlock.show("fast");
+    } else {
+        $.ajax({
+            type: "post",
+            url: "api/orders/",
+            data: formData,
+            dataType: "json",
+            success: function(result){
+                console.log(result);
+                switch (result.status) {
+                    case 'success':
+                        $orderBlock.html("<h2>Thanks for order! We will contact you soon!</h2>");
+                        break;
+                    case 'err_token':
+                        $orderBlock.html("<h2>Please, sign in again to make order</h2>");
+                        localStorage.clear();
+                        break;
+                    default:
+                        $orderBlock.html("<h2>Please, sign in again to make order</h2>");
+                        localStorage.clear();
+                        break;
+                };
+            },
+            error: function(){
+                $orderBlock.html("<h2>Error: Please, sign in again to make order</h2>");
+                // localStorage.clear();
+            }
+        });
+    }
+}
+
+$("#btn-order").click(function(){
+    newOrder();
 });
