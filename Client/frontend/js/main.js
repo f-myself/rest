@@ -30,6 +30,7 @@ var $statusBlock = $('#js-status');
 var $loginBar = $('#js-loginbar');
 var $orderBlock = $('#js-order');
 var $orderForm = $('#js-order-form');
+var $orderList = $('#js-order-list');
 
 //$helloBar.hide();
 
@@ -404,4 +405,46 @@ function newOrder(){
 
 $("#btn-order").click(function(){
     newOrder();
+});
+
+function getOrders(){
+    var formData = {
+            id: localStorage.getItem("id"),
+            token: localStorage.getItem("token")
+    };
+    console.log(formData);
+    if(!formData.id || !formData.token)
+    {
+        
+        $statusBlock.html("<h2>You need to be logged!</h2>");
+        $statusBlock.show("fast");
+    } else {
+        console.log('OK');
+        $.ajax({
+            type: "get",
+            url: "api/orders/",
+            data: formData,
+            dataType: "json",
+            success: function(result){
+                result.forEach(order => {
+                        $orderList.append(`
+                            <tr>
+                                <th scope="row">` + order.id + `</th>
+                                <td>` + order.brand + `</td>
+                                <td>` + order.model + `</td>
+                                <td>` + order.payment + `</td>
+                                <td>` + order.price + `</td>
+                            </tr>`
+                        )
+                })
+            },
+            error: function(){
+                console.log("error");
+            }
+        });
+    }
+}
+
+$("#js-show-orders").click(function(){
+    getOrders();
 });

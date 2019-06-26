@@ -38,7 +38,7 @@
                             Hello, user
                         </a>
                         <div class="dropdown-menu" aria-labelledby="js-userbar">
-                            <a class="dropdown-item" href="#orders">Show orders</a>
+                            <a class="dropdown-item" id="js-show-orders" href="#orders">Show orders</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" id="js-logout" href="#logout">Logout</a>
                         </div>
@@ -142,6 +142,24 @@
                 <div class="row">
                     <div class="col-6 pt-4" id="js-order">
                         
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pt-4">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Model</th>
+                                <th scope="col">Payment</th>
+                                <th scope="col">Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody  id="js-order-list">
+                              
+                            </tbody>
+                          </table>
                     </div>
                 </div>
             </div>

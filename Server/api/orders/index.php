@@ -15,7 +15,38 @@ class OrdersService
 
     public function getOrders($params)
     {
-        return $params;
+        $id = trim(strip_tags($_GET['id']));
+        $token = trim(strip_tags($_GET['token']));
+        
+        $loggedUser = $this->sql->newQuery()->select('token')->from('rest_users')->where('id=' . $id)->doQuery();
+        $user = $loggedUser[0];
+
+        if($token != $user['token'])
+        {
+            header("Status: 200 Ok");
+            return ["status" => "err_token"];
+        }
+
+        if($id and is_numeric($id))
+        {
+            $orders = $this->sql->newQuery()->select('o.id, co.car_id, b.brand, c.model, c.price, p.payment', true)
+                                            ->from('rest_cars c')
+                                            ->join('rest_brands b', 'c.brand_id=b.id')
+                                            ->join('rest_orders o', 'o.user_id=' . $id)
+                                            ->join('rest_cars_orders co', 'co.car_id=c.id')
+                                            ->join('rest_payments p', 'o.payment_id=p.id')
+                                            ->doQuery();
+            //echo $orders->getQuery();
+            echo $this->sql->getQuery();
+
+            if (!$orders[0])
+            {
+                return ["status" => "no_orders"];
+            }
+            //$orders["status"] = "success";
+            //var_dump($order);
+            return $orders;
+        }
     }
 
     public function postOrders($params)
