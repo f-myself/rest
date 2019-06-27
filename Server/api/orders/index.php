@@ -23,7 +23,6 @@ class OrdersService
 
         if($token != $user['token'])
         {
-            header("Status: 200 Ok");
             return ["status" => "err_token"];
         }
 
@@ -64,7 +63,6 @@ class OrdersService
 
         if($token != $user['token'])
         {
-            header("Status: 200 Ok");
             return ["status" => "err_token"];
         }
 
@@ -90,12 +88,10 @@ class OrdersService
 
             if($order and $cars_order)
             {
-                header("Status: 200 Ok");
                 return ["status" => "success"];
             }
         }
-        header("HTTP/1.0 400 Bad Request");
-        return ["status" => "failed"];
+        return ["status" => 400];
     }
 
     public function putOrders()

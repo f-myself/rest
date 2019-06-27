@@ -30,11 +30,36 @@ class DataHandler
 
     private function toJSON($data)
     {
+        header('Content-type: application/json');
+        if ($data['status'] == 400)
+        {
+            header("HTTP/1.0 400 Bad Request");
+        }
+        
+        if ($data['status'] == 204)
+        {
+            header('Status: 204 No Content');
+        } else {
+            header('Status: 200 Ok');
+        }
         return json_encode($data);
+        
     }
 
     private function toText($data)
     {
+        header('Content-type: text/plain');
+        if ($data['status'] == 400)
+        {
+            header("HTTP/1.0 400 Bad Request");
+        } 
+        
+        if ($data['status'] == 204)
+        {
+            header('Status: 204 No Content');
+        } else {
+            header('Status: 200 Ok');
+        }
         $text = "";
         if (is_array($data))
         {
@@ -60,6 +85,19 @@ class DataHandler
 
     private function toHtml($data)
     {
+        header('Content-type: text/html');
+        if ($data['status'] == 400)
+        {
+            header("HTTP/1.0 400 Bad Request");
+        }
+        
+        if ($data['status'] == 204)
+        {
+            header('Status: 204 No Content');
+        } else {
+            header('Status: 200 Ok');
+        }
+
         if(is_array($data))
         {
             $result = "";
@@ -88,6 +126,19 @@ class DataHandler
 
     private function toXML($data)
     {
+        header('Content-type: application/xml');
+        if ($data['status'] == 400)
+        {
+            header("HTTP/1.0 400 Bad Request");
+        }
+        
+        if ($data['status'] == 204)
+        {
+            header('Status: 204 No Content');
+        } else {
+            header('Status: 200 Ok');
+        }
+
         $xml = new SimpleXMLElement('<cars/>');
 
         if (is_array($data))

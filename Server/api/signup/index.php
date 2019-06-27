@@ -44,13 +44,11 @@ class SignUpService
 
         if ($password != $confirm)
         {
-            header("Status: 200 Ok");
             return ["status" => "password"];
         }
 
         if(!$this->checkRepeat($nickname, $email))
         {
-            header("Status: 200 Ok");
             return ["status" => "exists"];
         }
 
@@ -66,12 +64,10 @@ class SignUpService
             // $signup = true;
             if($signup)
             {
-                header('Status: 200 Ok');
                 return ["status" => "success"];
             }
         }
-        header("HTTP/1.0 400 Bad Request");
-        return ["status" => "failed"];
+        return ["status" => 400];
     }
 
     public function putSignup()

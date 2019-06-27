@@ -16,6 +16,42 @@ class CarsService
         $this->sql = new PDOHandler;
     }
 
+    public function getCars($params=false)
+    {
+        if(is_numeric($params[0]))
+        {
+            $result = $this->getCarById($params[0]);
+            return $result;
+        }
+        
+        if(!$params[0])
+        {
+            $result = $this->getAllCars();
+            return $result;
+        }
+        
+        if(isset($_GET['filter']))
+        {
+            $result = $this->getCarByParams($_GET['filter']);
+            return $result;
+        }
+    }
+
+    public function postCars()
+    {
+        
+    }
+
+    public function deleteCars()
+    {
+        
+    }
+
+    public function putCars()
+    {
+        
+    }
+
     private function getAllCars()
     {
         $allcars = $this->sql->newQuery()
@@ -23,7 +59,6 @@ class CarsService
                              ->from('rest_cars c')
                              ->join('rest_brands b', 'c.brand_id=b.id')
                              ->doQuery();
-        header('Status: 200 Ok');
         return $allcars;
     }
 
@@ -39,14 +74,12 @@ class CarsService
                              ->doQuery();
             if ($car[0])
             {
-                header('Status: 200 Ok');
                 return $car[0];
             } else {
-                header('Status: 204 No Content');
-                return null;
+                return ["status" => 204];
             }
         }
-        header('HTTP/1.0 400 Bad Request');
+        return ["status" => 400];
     }
 
     private function getCarByParams($params)
@@ -90,51 +123,11 @@ class CarsService
             $carsByParams = $carsByParams->doQuery();
             if ($carsByParams[0])
             {
-                header('Status: 200 Ok');
                 return $carsByParams;
             }
-            header('HTTP/1.0 204 No Content');
-            return false;
+            return ["status" => "no_cars"];
         }
-        header('HTTP/1.0 400 Bad Request');
-        return ERR_CARS_BY_PARAMS;
-    }
-    
-    public function getCars($params=false)
-    {
-        if(is_numeric($params[0]))
-        {
-            $result = $this->getCarById($params[0]);
-            return $result;
-        }
-        
-        if(!$params[0])
-        {
-            $result = $this->getAllCars();
-            // print_r($result);
-            return $result;
-        }
-        
-        if(isset($_GET['filter']))
-        {
-            $result = $this->getCarByParams($_GET['filter']);
-            return $result;
-        }
-    }
-
-    public function postCars()
-    {
-        return false;
-    }
-
-    public function deleteCars()
-    {
-        return false;
-    }
-
-    public function putCars()
-    {
-        return false;
+        return ["status" => 400];
     }
 }
 

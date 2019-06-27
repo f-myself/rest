@@ -45,13 +45,11 @@ class SignInService
                 
                 if(!$user)
                 {
-                    header('Status: 200 Ok');
                     return ["status" => "no_user"];
                 }
 
                 if($hashPassword != $user['password'])
                 {
-                    header('Status: 200 Ok');
                     return ["status" => "err_password"];
                 }
 
@@ -66,10 +64,8 @@ class SignInService
                         'token'    => $token,
                         'status'   => 'success'
                     ];
-                    header('Status: 200 Ok');
                     return $result;
                 }
-
             }
         }
 
@@ -86,7 +82,6 @@ class SignInService
 
                 if($requestToken != $user['token'])
                 {
-                    header('Status: 200 Ok');
                     return ["status" => "err_token"];
                 }
 
@@ -94,14 +89,11 @@ class SignInService
 
                 if($tokenInput)
                 {
-                    header("Status: 200 Ok");
                     return ["status" => "success"];
                 }
-                header("Status: 200 Ok");
                 return ["status" => "error"];
             }
-            header("HTTP/1.0 400 Bad Request");
-            return ["status" => "failed"];
+            return ["status" => 400];
         }
     }
 

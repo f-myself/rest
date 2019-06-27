@@ -111,8 +111,8 @@ function carFilter(){
     $.ajax({
         type: "GET",
         url: "api/cars/",
-        success: function(result){
-            var cars = ($.parseJSON(result));
+        dataType: "json",
+        success: function(cars){
             cars.forEach(car => {
                 $carList.append("<div class='col-lg-4 col-md-12 col-sm-12 col-xl-2 border border-light ml-1 mb-1 js-details' onclick='carDetails(" + car.id + ")' id='"+ car.id + "'><a href='#"+ car.id + "'>" + car.brand + " " + car.model + "</div>")
             });
@@ -138,9 +138,9 @@ function carDetails(id){
     $.ajax({
         type: "GET",
         url: "api/cars/" + id,
-        success: function(result){
-            if(result != "null"){
-                var car = ($.parseJSON(result));
+        dataType: "json",
+        success: function(car){
+            if(!car.status){
                 $carDetailed.html(`
                 <div class="col-9">
                             <table class="table">
@@ -404,7 +404,7 @@ function newOrder(){
                 };
             },
             error: function(){
-                $orderBlock.html("<h2>Error: Please, sign in again to make order</h2>");
+                $orderBlock.html("<h2>Error: Please, fill fields correctly for order</h2>");
                 // localStorage.clear();
             }
         });
