@@ -212,6 +212,7 @@ function signup(){
                     case 'success':
                         $statusBlock.html('<h2>Thanks for registration! Now you can login</h2>');
                         $statusBlock.show("fast");
+                        $signUpForm.hide("fast");
                         break;
                     case 'failed':
                         $statusBlock.html('<h2>Sorry, but your registration failed. Try again.</h2>');

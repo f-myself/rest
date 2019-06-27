@@ -23,18 +23,16 @@ class CarsService
             $result = $this->getCarById($params[0]);
             return $result;
         }
-        
-        if(!$params[0])
-        {
-            $result = $this->getAllCars();
-            return $result;
-        }
-        
+                
         if(isset($_GET['filter']))
         {
             $result = $this->getCarByParams($_GET['filter']);
             return $result;
         }
+
+        $result = $this->getAllCars();
+        return $result;
+
     }
 
     public function postCars()

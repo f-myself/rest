@@ -30,20 +30,11 @@ class RestServer
 
     public function chooseMethod($service)
     {
-        // list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
-        list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
-        
-        // echo $this->url;
-        // echo $source . "\n";
-        // echo $folder . "\n";
-        // echo $service . "\n";
-        // echo $params . "\n";
-        // echo $s . "\n";
-        // echo $a . "\n";
-        // echo $d . "\n";
-        // echo $db . "\n";
-        // echo $table . "\n";
-        // echo $path . "\n";
+        list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
+        // list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+        $viewType = explode("/", $params);
+        $viewType = array_pop($viewType);
+        //print_r($viewType);
 
         switch($this->method)
         {
@@ -76,11 +67,23 @@ class RestServer
                 return false;
         }
 
-        return $this->showResults($result, VIEW_JSON);
-        
-        // echo "<pre>";
-        // var_dump($this->service->getCars());
-        // echo "</pre>";
+        switch($viewType)
+        {
+            case ".json":
+                return $this->showResults($result, VIEW_JSON);
+                break;
+            case ".txt":
+                return $this->showResults($result, VIEW_TEXT);
+                break;
+            case ".xml":
+                return $this->showResults($result, VIEW_XML);
+                break;
+            case ".html":
+                return $this->showResults($result, VIEW_HTML);
+                break;
+            default:
+                return $this->showResults($result, VIEW_JSON);
+        }
     }
 
     private function showResults($data, $viewType=VIEW_JSON)
