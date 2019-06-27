@@ -30,8 +30,8 @@ class RestServer
 
     public function chooseMethod($service)
     {
-        list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
-        // list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
+        // list($source, $user, $folder, $param, $api, $service, $params) = explode('/', $this->url, 7); //Server, api, cars, params
+        list($root, $source, $folder, $service, $params) = explode('/', $this->url, 6); //Server, api, cars, params
         
         // echo $this->url;
         // echo $source . "\n";

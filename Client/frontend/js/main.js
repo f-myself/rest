@@ -30,7 +30,7 @@ var $statusBlock = $('#js-status');
 var $loginBar = $('#js-loginbar');
 var $orderBlock = $('#js-order');
 var $orderForm = $('#js-order-form');
-var $orderList = $('#js-order-list');
+var $orderListBlock = $('#js-order-block');
 
 //$helloBar.hide();
 
@@ -52,6 +52,10 @@ function is_numeric( mixed_var ) {
 
 
 function carFilter(){
+    $carDetailed.hide();
+    $orderBlock.hide();
+    $statusBlock.hide();
+    $orderListBlock.hide();
     var formData = {
         filter: {
             year: $('input[name=year]').val(),
@@ -91,6 +95,7 @@ function carFilter(){
     $carDetailed.hide();
     $signUpForm.hide();
     $orderBlock.hide();
+    $orderListBlock.hide();
     $statusBlock.hide();
     if(localStorage.getItem('nickname'))
     {
@@ -98,6 +103,7 @@ function carFilter(){
 
         $helloBar.show();
         $loginBar.hide();
+        $("#js-signup").hide();
     } else {
         $helloBar.hide();
         $loginBar.show();
@@ -117,6 +123,7 @@ function carFilter(){
 function onMain() {
     $carDetailed.hide("fast");
     $orderBlock.hide();
+    $orderListBlock.hide();
     $statusBlock.hide("fast");
     $carList.show("fast");
 
@@ -124,6 +131,7 @@ function onMain() {
 }
 
 function carDetails(id){
+    $orderListBlock.hide();
     $statusBlock.hide();
     $carList.hide();
     $carDetailed.show("fast");
@@ -408,6 +416,10 @@ $("#btn-order").click(function(){
 });
 
 function getOrders(){
+    $carDetailed.hide();
+    $carList.hide();
+    $orderBlock.hide();
+    $statusBlock.hide();
     var formData = {
             id: localStorage.getItem("id"),
             token: localStorage.getItem("token")
@@ -426,8 +438,26 @@ function getOrders(){
             data: formData,
             dataType: "json",
             success: function(result){
-                result.forEach(order => {
-                        $orderList.append(`
+                console.log(result);
+                if(!result.status){
+                    $orderListBlock.html(`
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Brand</th>
+                                    <th scope="col">Model</th>
+                                    <th scope="col">Payment</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                        <tbody  id="js-order-list">
+
+                        </tbody>
+                        </table>
+                    `)
+                    result.forEach(order => {
+                        $('#js-order-list').append(`
                             <tr>
                                 <th scope="row">` + order.id + `</th>
                                 <td>` + order.brand + `</td>
@@ -435,8 +465,19 @@ function getOrders(){
                                 <td>` + order.payment + `</td>
                                 <td>` + order.price + `</td>
                             </tr>`
-                        )
-                })
+                        );
+                    });
+                    $orderListBlock.show("fast");
+                } 
+                if (result.status == 'no_orders'){
+                    $orderListBlock.html("<h2>You have not bought cars.</h2>");
+                    $orderListBlock.show("fast");
+                }
+                if (result.status == 'err_token'){
+                    "<h2>Please, sign in again to look your orders.</h2>"
+                    localStorage.clear();
+                }
+                
             },
             error: function(){
                 console.log("error");

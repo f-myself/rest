@@ -29,15 +29,16 @@ class OrdersService
 
         if($id and is_numeric($id))
         {
-            $orders = $this->sql->newQuery()->select('o.id, co.car_id, b.brand, c.model, c.price, p.payment', true)
-                                            ->from('rest_cars c')
-                                            ->join('rest_brands b', 'c.brand_id=b.id')
-                                            ->join('rest_orders o', 'o.user_id=' . $id)
-                                            ->join('rest_cars_orders co', 'co.car_id=c.id')
+            $orders = $this->sql->newQuery()->select('o.id, co.car_id, b.brand, c.model, c.price, p.payment')
+                                            ->from('rest_orders o')
                                             ->join('rest_payments p', 'o.payment_id=p.id')
+                                            ->join('rest_cars_orders co', 'o.id=co.order_id')
+                                            ->join('rest_cars c', 'co.car_id=c.id')
+                                            ->join('rest_brands b', 'c.brand_id=b.id')
+                                            ->where('o.user_id=' . $id)
                                             ->doQuery();
             //echo $orders->getQuery();
-            echo $this->sql->getQuery();
+            // echo $this->sql->getQuery();
 
             if (!$orders[0])
             {
